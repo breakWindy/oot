@@ -49,7 +49,7 @@ static int fd_output_fn(const char *buf, int count)
 static void swap_words(Gfx *gfx)
 {
 	uint8_t b[8];
-	uint8_t *pw = (void *) gfx;
+	uint8_t *pw = (uint8_t *) gfx;
 	uint8_t *pb = b;
 
 	int endian = config.endian;
@@ -126,7 +126,7 @@ static void get_more_input(void)
 	if (state.end_input != 0)
 		return;
 
-	char *recv_buf = (void *) &state.gfx[0];
+	char *recv_buf = (char *) &state.gfx[0];
 
 	while (state.n_gfx < sizeof(state.gfx) / sizeof(state.gfx[0]))
 	{
@@ -217,7 +217,7 @@ TLOCAL struct gfxd_config config =
 
 void gfxd_input_buffer(const void *buf, int size)
 {
-	config.input_buf = buf;
+	config.input_buf = (char *)buf;
 	config.input_buf_size = size;
 	config.input_fn = &buffer_input_fn;
 }
@@ -275,7 +275,7 @@ void gfxd_arg_fn(gfxd_arg_fn_t *fn)
 
 int gfxd_write(const void *buf, int count)
 {
-	return config.output_fn(buf, count);
+	return config.output_fn((char *)buf, count);
 }
 
 int gfxd_puts(const char *str)
